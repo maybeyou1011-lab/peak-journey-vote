@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>幸福大無限・挑戰巔峰之旅 ｜ 日期投票</title>
+<style>
+  /* ====== 白話說明：這整段是網頁外觀（電影感金色夕陽團隊風），顏色字體都在這調 ====== */
+  :root{
+    --gold:#e3b04b;          /* 主金 */
+    --gold-bright:#f7d680;   /* 亮金（高光） */
+    --gold-deep:#a9781c;
+    --bg1:#150f0a;           /* 深夜暖黑 */
+    --bg2:#2a1d10;           /* 暖棕 */
+    --text:#f5ecd8;
+    --muted:#c3b193;
+    --line:rgba(227,176,75,.22);
+    --card:rgba(255,250,238,.05);
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+  body{
+    font-family:"PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+    color:var(--text); line-height:1.6;
+    background:
+      radial-gradient(1200px 600px at 50% -10%, rgba(247,214,128,.18), transparent 60%),
+      radial-gradient(800px 500px at 110% 30%, rgba(227,176,75,.10), transparent 55%),
+      linear-gradient(180deg,var(--bg1),var(--bg2));
+    background-attachment:fixed;
+    padding:0 16px 70px;
+    min-height:100vh;
+  }
+  body.locked{overflow:hidden;}
+  .wrap{max-width:500px; margin:0 auto;}
+
+  /* ===================== 動畫封面 ===================== */
+  #cover{position:fixed; inset:0; z-index:50; overflow:hidden; cursor:pointer;
+    background:#0d0907; transition:opacity .9s ease, transform .9s ease;}
+  #cover.gone{opacity:0; transform:scale(1.08); pointer-events:none;}
+  /* 背景大圖：緩緩放大的 Ken Burns 運鏡 */
+  #cover .bgimg{position:absolute; inset:0; background:url('hero.jpg') center/cover no-repeat;
+    animation:kenburns 22s ease-in-out infinite alternate;
+    transform-origin:50% 38%;}
+  @keyframes kenburns{ from{transform:scale(1.02)} to{transform:scale(1.16)} }
+  /* 底部漸層讓字看得清楚 */
+  #cover .veil{position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(13,9,7,.15) 0%, rgba(13,9,7,0) 38%, rgba(13,9,7,.55) 78%, rgba(13,9,7,.92) 100%);}
+  /* 金色光暈呼吸 */
+  #cover .glow{position:absolute; left:50%; top:30%; width:70vw; height:70vw; max-width:520px; max-height:520px;
+    transform:translate(-50%,-50%); border-radius:50%; pointer-events:none;
+    background:radial-gradient(circle, rgba(247,214,128,.28), transparent 62%);
+    animation:breathe 5s ease-in-out infinite;}
+  @keyframes breathe{ 0%,100%{opacity:.5; transform:translate(-50%,-50%) scale(.92)} 50%{opacity:1; transform:translate(-50%,-50%) scale(1.08)} }
+
+  /* 封面下方文字＋按鈕 */
+  #cover .cover-foot{position:absolute; left:0; right:0; bottom:0; padding:0 24px 46px;
+    text-align:center; z-index:2;}
+  #cover .ctag{font-size:16px; letter-spacing:5px; color:var(--gold-bright);
+    text-shadow:0 2px 14px rgba(0,0,0,.7); opacity:0; animation:rise .9s ease .5s forwards;}
+  #cover .cline{height:1px; width:60px; margin:14px auto 22px;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);
+    opacity:0; animation:rise .9s ease .7s forwards;}
+  #cover .enter{display:inline-flex; align-items:center; gap:10px;
+    padding:16px 40px; font-size:18px; font-weight:800; letter-spacing:3px; color:#231708;
+    border:none; border-radius:40px; cursor:pointer;
+    background:linear-gradient(135deg,var(--gold-bright),var(--gold) 55%,var(--gold-deep));
+    box-shadow:0 10px 30px rgba(227,176,75,.5), inset 0 1px 0 rgba(255,255,255,.5);
+    opacity:0; animation:rise .9s ease .9s forwards, pulse 2.2s ease-in-out 1.8s infinite;}
+  #cover .enter .arrow{font-size:20px; animation:nudge 1.6s ease-in-out infinite;}
+  #cover .enter:active{transform:scale(.96);}
+  #cover .hint{margin-top:16px; font-size:12px; letter-spacing:2px; color:rgba(245,236,216,.6);
+    opacity:0; animation:rise .9s ease 1.2s forwards;}
+  @keyframes rise{ from{opacity:0; transform:translateY(22px)} to{opacity:1; transform:translateY(0)} }
+  @keyframes pulse{ 0%,100%{box-shadow:0 10px 30px rgba(227,176,75,.5), inset 0 1px 0 rgba(255,255,255,.5)}
+    50%{box-shadow:0 10px 46px rgba(247,214,128,.85), inset 0 1px 0 rgba(255,255,255,.5)} }
+  @keyframes nudge{ 0%,100%{transform:translateX(0)} 50%{transform:translateX(5px)} }
+
+  /* 飄動金色光點 */
+  #cover .spark{position:absolute; width:6px; height:6px; border-radius:50%;
+    background:radial-gradient(circle,#fff,rgba(247,214,128,.9) 40%,transparent 70%);
+    box-shadow:0 0 8px rgba(247,214,128,.9); opacity:0;}
+  #cover .spark.s1{left:18%; top:30%; animation:twinkle 3.2s ease-in-out .2s infinite;}
+  #cover .spark.s2{left:78%; top:24%; animation:twinkle 2.6s ease-in-out .8s infinite;}
+  #cover .spark.s3{left:30%; top:60%; animation:twinkle 3.8s ease-in-out 1.1s infinite;}
+  #cover .spark.s4{left:68%; top:66%; animation:twinkle 3s ease-in-out 1.6s infinite;}
+  #cover .spark.s5{left:50%; top:18%; animation:twinkle 2.4s ease-in-out .5s infinite;}
+  #cover .spark.s6{left:86%; top:50%; animation:twinkle 3.4s ease-in-out 2s infinite;}
+  @keyframes twinkle{ 0%,100%{opacity:0; transform:translateY(0) scale(.6)}
+    50%{opacity:1; transform:translateY(-12px) scale(1.2)} }
+
+  /* 進場後內容淡入 */
+  .wrap{opacity:0; transform:translateY(16px); transition:opacity .7s ease .15s, transform .7s ease .15s;}
+  .wrap.in{opacity:1; transform:translateY(0);}
+
+  /* ===== 主視覺 ===== */
+  .hero{position:relative; margin:18px 0 6px;}
+  .hero img{width:100%; display:block; border-radius:18px;
+    box-shadow:0 18px 50px rgba(0,0,0,.55), 0 0 0 1px rgba(247,214,128,.18),
+               0 0 60px rgba(227,176,75,.25);}
+  .hero::after{content:""; position:absolute; inset:auto 0 -1px 0; height:34%;
+    background:linear-gradient(180deg,transparent,rgba(21,15,10,.0) 0%,rgba(21,15,10,.55));
+    border-radius:0 0 18px 18px; pointer-events:none;}
+  .tagline{text-align:center; margin:16px 0 22px;}
+  .tagline .line{display:inline-block; height:1px; width:30px; vertical-align:middle;
+    background:linear-gradient(90deg,transparent,var(--gold)); margin:0 10px;}
+  .tagline .line.r{background:linear-gradient(90deg,var(--gold),transparent);}
+  .tagline span.t{font-size:17px; letter-spacing:3px;
+    background:linear-gradient(90deg,var(--gold-bright),var(--gold));
+    -webkit-background-clip:text; background-clip:text; color:transparent; font-weight:700;}
+
+  /* ===== 卡片 ===== */
+  .card{background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:18px 16px; margin-bottom:16px; backdrop-filter:blur(8px);
+    box-shadow:0 8px 28px rgba(0,0,0,.28);}
+  .label{font-size:15px; font-weight:700; margin-bottom:10px; display:block; letter-spacing:.5px;}
+  .label .req{color:#f0a36a; font-size:12px; font-weight:500; margin-left:4px;}
+  input[type=text], select{
+    width:100%; padding:13px 14px; font-size:16px; border-radius:11px;
+    border:1px solid var(--line); background:rgba(255,255,255,.06);
+    color:var(--text); outline:none; transition:.15s;}
+  input::placeholder{color:#9c8b6f;}
+  select option{color:#222;}
+  input[type=text]:focus, select:focus{
+    border-color:var(--gold); background:rgba(247,214,128,.08);
+    box-shadow:0 0 0 3px rgba(227,176,75,.15);}
+
+  /* ===== 日期選項 ===== */
+  .dates{display:flex; flex-direction:column; gap:11px;}
+  .date-opt{display:flex; align-items:center; gap:13px; cursor:pointer; user-select:none;
+    border:1.5px solid var(--line); border-radius:13px; padding:15px 15px;
+    background:rgba(255,255,255,.03); transition:.18s;}
+  .date-opt:active{transform:scale(.99);}
+  .date-opt.on{border-color:var(--gold);
+    background:linear-gradient(100deg,rgba(247,214,128,.16),rgba(227,176,75,.06));
+    box-shadow:0 0 22px rgba(227,176,75,.22), inset 0 0 0 1px rgba(247,214,128,.3);}
+  .date-opt .tick{width:26px; height:26px; border-radius:8px; flex:0 0 auto;
+    border:2px solid rgba(227,176,75,.5); background:transparent;
+    display:flex; align-items:center; justify-content:center;
+    font-size:15px; color:#1a120a; transition:.18s;}
+  .date-opt.on .tick{background:linear-gradient(135deg,var(--gold-bright),var(--gold));
+    border-color:var(--gold-bright); box-shadow:0 0 12px rgba(247,214,128,.6);}
+  .date-opt .tick .mk{opacity:0; transform:scale(.5); transition:.18s; font-weight:900;}
+  .date-opt.on .tick .mk{opacity:1; transform:scale(1);}
+  .date-opt .d-main{font-size:18px; font-weight:700;}
+  .date-opt .d-sub{font-size:13px; color:var(--muted); margin-left:6px;}
+  .date-opt input{display:none;}
+
+  /* ===== 按鈕 ===== */
+  .btn{width:100%; padding:16px; font-size:18px; font-weight:800; letter-spacing:2px;
+    color:#231708; border:none; border-radius:13px; cursor:pointer; transition:.18s;
+    background:linear-gradient(135deg,var(--gold-bright),var(--gold) 55%,var(--gold-deep));
+    box-shadow:0 10px 26px rgba(227,176,75,.35), inset 0 1px 0 rgba(255,255,255,.4);}
+  .btn:active{transform:translateY(1px); box-shadow:0 6px 16px rgba(227,176,75,.3);}
+  .btn:disabled{filter:grayscale(.4) brightness(.85); cursor:not-allowed;}
+
+  /* ===== 結果長條圖 ===== */
+  .results{display:flex; flex-direction:column; gap:16px; margin-top:4px;}
+  .bar-row .bar-top{display:flex; justify-content:space-between; align-items:baseline; font-size:15px; margin-bottom:6px;}
+  .bar-row .bar-top .cnt{font-weight:800;
+    background:linear-gradient(90deg,var(--gold-bright),var(--gold));
+    -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .bar-track{background:rgba(255,255,255,.07); border-radius:9px; height:16px; overflow:hidden;
+    border:1px solid var(--line);}
+  .bar-fill{height:100%; width:0; border-radius:9px; transition:width .7s cubic-bezier(.2,.8,.2,1);
+    background:linear-gradient(90deg,var(--gold-deep),var(--gold),var(--gold-bright));
+    box-shadow:0 0 14px rgba(247,214,128,.5);}
+  .bar-row.lead .bar-top span:first-child::before{content:"👑 "; }
+  .bar-row.lead .bar-track{box-shadow:0 0 0 1.5px var(--gold-bright), 0 0 18px rgba(247,214,128,.35);}
+  .total{text-align:center; color:var(--muted); font-size:14px; margin-top:18px; letter-spacing:.5px;}
+
+  /* ===== 其他 ===== */
+  .notice{font-size:13px; text-align:center; padding:12px; border-radius:12px;
+    margin-bottom:16px; background:rgba(247,214,128,.12); color:var(--gold-bright);
+    border:1px solid var(--line);}
+  .link{display:block; text-align:center; margin-top:16px; color:var(--gold-bright);
+    font-size:14px; cursor:pointer; letter-spacing:.5px;}
+  .link:active{opacity:.7;}
+  .hidden{display:none!important;}
+  .toast{position:fixed; left:50%; bottom:30px; transform:translateX(-50%) translateY(10px);
+    background:linear-gradient(135deg,#2e2012,#1a120a); color:var(--gold-bright);
+    border:1px solid var(--gold); padding:13px 22px; border-radius:30px; font-size:14px;
+    opacity:0; transition:.3s; pointer-events:none; z-index:9; box-shadow:0 10px 30px rgba(0,0,0,.5);}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+  .footnote{text-align:center; color:#8a7a5e; font-size:12px; margin-top:26px; letter-spacing:1px;}
+</style>
+</head>
+<body class="locked">
+
+<!-- ===================== 動畫封面（點一下進入投票） ===================== -->
+<div id="cover">
+  <div class="bgimg"></div>
+  <div class="veil"></div>
+  <div class="glow"></div>
+  <span class="spark s1"></span><span class="spark s2"></span><span class="spark s3"></span>
+  <span class="spark s4"></span><span class="spark s5"></span><span class="spark s6"></span>
+  <div class="cover-foot">
+    <div class="ctag">選出我們一起出發的日子</div>
+    <div class="cline"></div>
+    <button class="enter" id="enterBtn">進 入 投 票 <span class="arrow">▸</span></button>
+    <div class="hint">點擊畫面任一處進入</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- 主視覺 -->
+  <div class="hero"><img src="hero.jpg" alt="幸福大無限 挑戰巔峰之旅"></div>
+  <div class="tagline">
+    <span class="line"></span><span class="t">選出我們一起出發的日子</span><span class="line r"></span>
+  </div>
+
+  <!-- 還沒連好試算表時會顯示這條提醒 -->
+  <div id="setupNotice" class="notice hidden">
+    ⚠️ 尚未連結 Google 試算表，目前是預覽模式，投票不會被記錄。
+  </div>
+
+  <!-- ===== 投票表單 ===== -->
+  <div id="formView">
+    <div class="card">
+      <label class="label">你的名字 <span class="req">必填</span></label>
+      <input type="text" id="name" placeholder="請輸入姓名" autocomplete="name">
+    </div>
+
+    <div class="card">
+      <label class="label">你的隊別（選填）</label>
+      <select id="team">
+        <option value="">不指定</option>
+        <option>第一大隊</option>
+        <option>第二大隊</option>
+        <option>第三大隊</option>
+      </select>
+    </div>
+
+    <div class="card">
+      <label class="label">方便的日期 <span class="req">可複選，至少一個</span></label>
+      <div class="dates" id="dateList"></div>
+    </div>
+
+    <button class="btn" id="submitBtn">送 出 我 的 選 擇</button>
+    <span class="link" id="goResult">直接看目前票數 →</span>
+  </div>
+
+  <!-- ===== 結果頁 ===== -->
+  <div id="resultView" class="hidden">
+    <div class="card">
+      <label class="label">即時票數排名</label>
+      <div class="results" id="results"></div>
+      <div class="total" id="totalLine">載入中…</div>
+    </div>
+    <button class="btn" id="backBtn">我要修改／重新投票</button>
+    <span class="link" id="refreshBtn">🔄 更新最新票數</span>
+  </div>
+
+  <div class="footnote">幸福大無限 ・ 挑戰巔峰之旅</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   白話設定區：要改日期或貼試算表網址，改這裡就好
+   ========================================================= */
+
+// 投票日期選項（改這裡就能換日期）
+const DATES = [
+  { id:"6/30",  main:"6/30（二）", sub:"晚上" },
+  { id:"7/13",  main:"7/13（一）", sub:"" },
+  { id:"7/14",  main:"7/14（二）", sub:"" },
+  { id:"7/18",  main:"7/18（六）", sub:"" },
+  { id:"7/19",  main:"7/19（日）", sub:"下午" },
+];
+
+// ↓↓↓ 把 Google Apps Script 部署後的網址貼到這裡（步驟看 設定說明.txt） ↓↓↓
+const SCRIPT_URL = "PASTE_YOUR_SCRIPT_URL_HERE";
+
+/* ===== 以下是程式邏輯，不用動 ===== */
+const isLive = SCRIPT_URL.startsWith("http");
+const $ = s => document.querySelector(s);
+let picked = new Set();
+
+// 封面：點一下淡出，露出投票內容
+let entered = false;
+function enterApp(){
+  if(entered) return; entered = true;
+  $("#cover").classList.add("gone");
+  document.body.classList.remove("locked");
+  $(".wrap").classList.add("in");
+  setTimeout(()=>{ const c=$("#cover"); if(c) c.style.display="none"; }, 950);
+}
+$("#cover").addEventListener("click", enterApp);
+
+if(!isLive) $("#setupNotice").classList.remove("hidden");
+
+const dateList = $("#dateList");
+DATES.forEach(d=>{
+  const el = document.createElement("label");
+  el.className = "date-opt";
+  el.dataset.id = d.id;
+  el.innerHTML = `<span class="tick"><span class="mk">✓</span></span>
+    <span><span class="d-main">${d.main}</span>${d.sub?`<span class="d-sub">${d.sub}</span>`:""}</span>`;
+  el.addEventListener("click", ()=>{
+    if(picked.has(d.id)){ picked.delete(d.id); el.classList.remove("on"); }
+    else { picked.add(d.id); el.classList.add("on"); }
+  });
+  dateList.appendChild(el);
+});
+
+const saved = localStorage.getItem("peakVoteName");
+if(saved) $("#name").value = saved;
+
+function toast(msg){
+  const t=$("#toast"); t.textContent=msg; t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),2200);
+}
+function show(view){
+  $("#formView").classList.toggle("hidden", view!=="form");
+  $("#resultView").classList.toggle("hidden", view!=="result");
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+$("#submitBtn").addEventListener("click", ()=>{
+  const name = $("#name").value.trim();
+  if(!name){ toast("請先填名字"); return; }
+  if(picked.size===0){ toast("至少選一個日期"); return; }
+  localStorage.setItem("peakVoteName", name);
+
+  if(!isLive){ toast("預覽模式，未記錄"); loadTally(); show("result"); return; }
+
+  $("#submitBtn").disabled = true;
+  $("#submitBtn").textContent = "送出中…";
+
+  const body = new URLSearchParams();
+  body.append("name", name);
+  body.append("team", $("#team").value);
+  body.append("dates", [...picked].join(","));
+
+  fetch(SCRIPT_URL, { method:"POST", mode:"no-cors", body })
+    .then(()=>{
+      toast("投票成功，謝謝你！");
+      $("#submitBtn").disabled=false; $("#submitBtn").textContent="送 出 我 的 選 擇";
+      setTimeout(()=>{ loadTally(); show("result"); }, 600);
+    })
+    .catch(()=>{
+      toast("送出失敗，請再試一次");
+      $("#submitBtn").disabled=false; $("#submitBtn").textContent="送 出 我 的 選 擇";
+    });
+});
+
+$("#goResult").addEventListener("click", ()=>{ loadTally(); show("result"); });
+$("#backBtn").addEventListener("click", ()=> show("form"));
+$("#refreshBtn").addEventListener("click", ()=>{ toast("更新中…"); loadTally(); });
+
+let jsonpCb = 0;
+function loadTally(){
+  if(!isLive){ renderTally(demoTally(), 7); return; }
+  const cbName = "peakCb"+(++jsonpCb);
+  window[cbName] = (data)=>{
+    renderTally(data.tally||{}, data.total||0);
+    delete window[cbName]; s.remove();
+  };
+  const s = document.createElement("script");
+  s.src = SCRIPT_URL + "?action=tally&callback=" + cbName + "&t=" + (jsonpCb);
+  s.onerror = ()=>{ $("#totalLine").textContent="讀取票數失敗"; s.remove(); };
+  document.body.appendChild(s);
+}
+
+function renderTally(tally, total){
+  const box = $("#results"); box.innerHTML="";
+  const counts = DATES.map(d=>({ ...d, n: tally[d.id]||0 }));
+  const max = Math.max(1, ...counts.map(c=>c.n));
+  const lead = Math.max(...counts.map(c=>c.n));
+  counts.forEach(c=>{
+    const row = document.createElement("div");
+    row.className = "bar-row" + (c.n===lead && lead>0 ? " lead":"");
+    row.innerHTML = `
+      <div class="bar-top">
+        <span>${c.main}${c.sub?" "+c.sub:""}</span>
+        <span class="cnt">${c.n} 票</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill"></div></div>`;
+    box.appendChild(row);
+    requestAnimationFrame(()=>{ row.querySelector(".bar-fill").style.width = (c.n/max*100)+"%"; });
+  });
+  $("#totalLine").textContent = total>0 ? `已有 ${total} 人投票` : "還沒有人投票，快當第一個！";
+}
+
+function demoTally(){ return { "6/30":4, "7/13":2, "7/14":3, "7/18":6, "7/19":5 }; }
+</script>
+</body>
+</html>
