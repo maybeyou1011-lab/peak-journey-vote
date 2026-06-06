@@ -126,8 +126,13 @@
     border-color:var(--gold-bright); box-shadow:0 0 12px rgba(246,201,90,.6);}
   .date-opt .tick .mk{opacity:0; transform:scale(.5); transition:.18s; font-weight:900;}
   .date-opt.on .tick .mk{opacity:1; transform:scale(1);}
+  .date-opt .d-text{flex:1;}
   .date-opt .d-main{font-size:18px; font-weight:700;}
   .date-opt .d-sub{font-size:13px; color:var(--muted); margin-left:6px;}
+  .date-opt .d-tag{flex:0 0 auto; font-size:13px; font-weight:700; letter-spacing:1px;
+    padding:4px 11px; border-radius:20px; border:1px solid transparent;}
+  .date-opt .d-tag.weekday{color:#3f7bb0; background:rgba(127,184,230,.18); border-color:rgba(127,184,230,.45);}
+  .date-opt .d-tag.holiday{color:#d2761c; background:rgba(246,201,90,.22); border-color:rgba(224,168,56,.55);}
   .date-opt input{display:none;}
 
   /* ===== 按鈕 ===== */
@@ -245,15 +250,15 @@
 
 // 投票日期選項（改這裡就能換日期）
 const DATES = [
-  { id:"6/30",  main:"6/30（二）", sub:"晚上" },
-  { id:"7/13",  main:"7/13（一）", sub:"" },
-  { id:"7/14",  main:"7/14（二）", sub:"" },
-  { id:"7/18",  main:"7/18（六）", sub:"" },
-  { id:"7/19",  main:"7/19（日）", sub:"下午" },
+  { id:"6/30",  main:"6/30（二）", sub:"晚上", tag:"平日" },
+  { id:"7/13",  main:"7/13（一）", sub:"",     tag:"平日" },
+  { id:"7/14",  main:"7/14（二）", sub:"",     tag:"平日" },
+  { id:"7/18",  main:"7/18（六）", sub:"",     tag:"假日" },
+  { id:"7/19",  main:"7/19（日）", sub:"下午", tag:"假日" },
 ];
 
 // ↓↓↓ 把 Google Apps Script 部署後的網址貼到這裡（步驟看 設定說明.txt） ↓↓↓
-const SCRIPT_URL = "PASTE_YOUR_SCRIPT_URL_HERE";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzOiYWayiRuq0GDfDXSzMJ2Q9u4FGZAtmlTq7kzo7l8rMLci9QNcIKkQC__sOWKMMyT/exec";
 
 /* ===== 以下是程式邏輯，不用動 ===== */
 const isLive = SCRIPT_URL.startsWith("http");
@@ -279,7 +284,8 @@ DATES.forEach(d=>{
   el.className = "date-opt";
   el.dataset.id = d.id;
   el.innerHTML = `<span class="tick"><span class="mk">✓</span></span>
-    <span><span class="d-main">${d.main}</span>${d.sub?`<span class="d-sub">${d.sub}</span>`:""}</span>`;
+    <span class="d-text"><span class="d-main">${d.main}</span>${d.sub?`<span class="d-sub">${d.sub}</span>`:""}</span>
+    <span class="d-tag ${d.tag==='假日'?'holiday':'weekday'}">${d.tag}</span>`;
   el.addEventListener("click", ()=>{
     if(picked.has(d.id)){ picked.delete(d.id); el.classList.remove("on"); }
     else { picked.add(d.id); el.classList.add("on"); }
